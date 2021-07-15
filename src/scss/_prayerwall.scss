@@ -1,0 +1,185 @@
+.prayerwall {
+  grid-column: center-start / center-end;
+  position: relative;
+
+  &__prayicon {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    font-size: 6rem;
+  }
+
+  &__titlebox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    padding: 5rem 8rem;
+
+    &-title {
+      text-align: center;
+    }
+
+    &-desc {
+      font-size: $font-size-desc;
+      margin: $margin-med;
+    }
+  }
+
+  &__form {
+    background-image: $gradient-primary;
+    display: flex;
+    flex-direction: column;
+    padding: 4rem 20%;
+    justify-content: center;
+  }
+
+  &__wall {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 10rem;
+
+    &__reqs {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      &__req {
+        width: 100%;
+        padding: 1rem 2rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 5rem minmax(8rem, 1fr) 3rem 1rem 5rem min-content;
+        grid-row-gap: 2rem;
+        align-items: center;
+
+        &-name {
+          grid-column: 1 / 2;
+          grid-row: 1 / 2;
+          color: $color-grey-dark-2;
+          font-size: 1.75rem;
+          font-weight: 700;
+          letter-spacing: 0.1rem;
+        }
+
+        &-date {
+          font-size: 1.25rem;
+          font-weight: 500;
+        }
+
+        &-message {
+          grid-column: 1 / -1;
+          grid-row: 2 / 3;
+          font-size: 2rem;
+        }
+
+        &-data {
+          grid-column: 1 / -1;
+          grid-row: 3 / 4;
+          font-size: 1.5rem;
+          display: flex;
+          flex-direction: row;
+
+          .data__icon {
+            color: $color-primary;
+            margin-right: 1rem;
+          }
+
+          .data__num {
+            margin-right: 2rem;
+          }
+        }
+
+        &-line {
+          grid-column: 1 / -1;
+          grid-row: 4 / 5;
+          width: 100%;
+          justify-self: center;
+        }
+
+        &-actions {
+          grid-column: 1 / -1;
+          grid-row: 5 / 6;
+          justify-self: center;
+          display: flex;
+          flex-direction: row;
+
+          .actions__box {
+            font-size: 2rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            transition: all 0.25s;
+
+            &-icon {
+              margin-right: 1rem;
+              transition: color 0.3s;
+            }
+
+            &:hover {
+              background-color: $color-grey-light-2;
+            }
+          }
+
+          .actions__icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: $bp-medium) {
+    &__form {
+      padding: 4rem 2rem;
+    }
+
+    &__wall {
+      padding: 1rem 0;
+    }
+  }
+
+  @media only screen and (max-width: $bp-small) {
+    grid-column: full-start / full-end;
+    margin: 0 3rem;
+
+    &__prayicon {
+      display: none;
+    }
+
+    &__titlebox {
+      padding: 2rem;
+
+      &-desc {
+        font-size: 1.75rem;
+        margin: 1.25rem $margin-med;
+      }
+    }
+
+    &__wall {
+      padding: 1rem 0;
+
+      &__reqs {
+        &__req {
+          &-message {
+            font-size: 1.75rem;
+          }
+
+          &-data {
+            font-size: 1.25rem;
+          }
+
+          &-actions {
+            .actions__box {
+              font-size: 1.6rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

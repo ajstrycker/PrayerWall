@@ -1,0 +1,77 @@
+.loader {
+  display: inline-block;
+  width: 5rem;
+  height: 5rem;
+  position: relative;
+  top: 50%;
+  border-radius: 1rem;
+  animation: loader 2s infinite ease;
+  align-self: center;
+
+  &-inner {
+    vertical-align: top;
+    display: inline-block;
+    width: 100%;
+    animation: loader-inner 2s infinite ease-in;
+  }
+}
+
+.loader-green {
+  border: 4px solid $color-primary;
+}
+
+.loader-white {
+  border: 4px solid #fff;
+}
+
+.inner-green {
+  background-color: $color-primary;
+}
+
+.inner-white {
+  background-color: #fff;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(180deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  75% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-inner {
+  0% {
+    height: 0%;
+  }
+
+  25% {
+    height: 0%;
+  }
+
+  50% {
+    height: 100%;
+  }
+
+  75% {
+    height: 100%;
+  }
+
+  100% {
+    height: 0%;
+  }
+}

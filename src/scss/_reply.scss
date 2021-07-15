@@ -1,0 +1,154 @@
+.replies {
+  grid-row: 6 / 7;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  &__input {
+    margin: 2rem 0;
+    width: 75%;
+
+    display: grid;
+    grid-template-columns: 80% 20%;
+    grid-template-rows: repeat(2, 8rem);
+
+    &-reply {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+    }
+
+    &-name {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+    }
+
+    &-button {
+      grid-column: 2 / 3;
+      grid-row: 1 / -1;
+      justify-self: center;
+      align-self: center;
+      font-size: 1.5rem;
+      padding: 1rem 3rem;
+    }
+  }
+
+  &__all {
+    padding: 0rem 0 2rem 0;
+    width: 75%;
+
+    &__reply {
+      border-radius: 0.5rem;
+      margin: 2rem 0;
+      background-color: #fff;
+      font-size: 1.5rem;
+      border-bottom: 1px solid $color-primary;
+      overflow: hidden;
+
+      display: grid;
+      grid-template-columns: 20rem 1fr;
+      align-items: center;
+
+      &-namedate {
+        clip-path: polygon(0 0, 73% 0, 88% 100%, 0% 100%);
+        background-color: $color-primary;
+        color: #fff;
+        padding: 1rem;
+        grid-column: 1 / 2;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
+
+      &-name {
+        font-size: 1.75rem;
+        font-weight: 700;
+        max-width: 12rem;
+      }
+
+      &-text {
+        font-size: 1.75rem;
+        grid-column: 2 / 3;
+        margin: 2rem 1rem;
+      }
+    }
+  }
+
+  &__error {
+    color: $message-fail-bg;
+    font-size: 1.75rem;
+    margin-top: 1rem;
+  }
+
+  @media only screen and (max-width: $bp-medium) {
+    &__input {
+      font-size: 1.5rem;
+      margin: 2rem 0;
+      width: 90%;
+
+      display: grid;
+      grid-template-columns: 100%;
+      grid-template-rows: repeat(2, 8rem) 5rem;
+
+      &-reply {
+        grid-row: 1 / 2;
+        grid-column: 1 / -1;
+      }
+
+      &-name {
+        grid-row: 2 / 3;
+        grid-column: 1 / -1;
+      }
+
+      &-button {
+        grid-row: 3 / 4;
+        grid-column: 1 / -1;
+      }
+    }
+
+    &__all {
+      width: 90%;
+    }
+
+    &__error {
+      color: $message-fail-bg;
+      font-size: 1.75rem;
+      margin-top: 1rem;
+    }
+  }
+}
+
+.collapse {
+  grid-row: 6 / 7;
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.collapse-enter {
+  max-height: 0;
+  opacity: 0;
+}
+
+.collapse-enter-active {
+  max-height: 80rem;
+  opacity: 1;
+  transition: max-height 400ms, opacity 300ms;
+}
+
+.collapse-enter-done {
+  overflow-y: auto;
+}
+
+.collapse-exit {
+  max-height: 50rem;
+  opacity: 1;
+}
+
+.collapse-exit-active {
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 400ms, opacity 300ms;
+}

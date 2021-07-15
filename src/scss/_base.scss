@@ -1,0 +1,98 @@
+$color-primary: #268031;
+$color-primary-verylight: #43e057;
+$color-primary-light: #2fa33d;
+$color-primary-dark: #1f6e28;
+
+$color-grey-light-1: #f9f7f6;
+$color-grey-light-2: #ebebeb;
+$color-grey-light-3: #aaa;
+$color-grey-light-4: #7a7979;
+
+$color-grey-dark-1: #737373;
+$color-grey-dark-2: #666666;
+$color-grey-dark-3: #545454;
+
+$shadow-xs: 0 0.7rem 1rem -1px rgba(0, 0, 0, 0.2);
+$shadow-sm: 0 1rem 2rem rgba(#000, 0.2);
+$shadow-md: 0 1.5rem 3rem rgba(#000, 0.2);
+$shadow-lg: 0 3rem 4rem rgba(#000, 0.35);
+$shadow-dark: 0 3rem 4rem rgba(#000, 0.5);
+
+$shadow-primary-sm: 0 0.6rem 1rem rgba($color-primary, 0.5);
+$shadow-primary-md: 0 1.5rem 3rem rgba($color-primary, 0.2);
+$shadow-primary-lg: 0 3rem 4rem rgba($color-primary, 0.35);
+
+$margin-small: 1rem;
+$margin-med: 2rem;
+$margin-large: 5rem;
+
+$message-success-bg: #5cb85c;
+$message-fail-bg: #d9534f;
+
+$transition-fast: 0.2s;
+
+$font-reg: news_cycleregular;
+$font-bold: news_cyclebold;
+
+$font-size-title: 2.5rem;
+$font-size-desc: 2rem;
+
+$gradient-primary: linear-gradient(
+  to right,
+  rgba($color-primary-verylight, 0.9),
+  rgba($color-primary-dark, 0.95)
+);
+$gradient-dark: linear-gradient(
+  to right bottom,
+  rgba($color-grey-dark-1, 0.9),
+  rgba($color-grey-dark-2, 0.95)
+);
+
+$bp-largest: 75em; // 1200px
+$bp-large: 62.5em; // 1000px
+$bp-medium: 50em; // 800px;
+$bp-small: 37.5em; // 600px;
+
+$template-columns: [full-start] minmax(6rem, 1fr) [center-start]
+  repeat(8, [col-start] minmax(min-content, 18rem) [col-end]) [center-end]
+  minmax(6rem, 1fr) [full-end];
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+a {
+  color: $color-grey-dark-2;
+  text-decoration: none;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%; // 10px/16px = 62.5% -> 1rem = 10px
+
+  @media only screen and (max-width: $bp-large) {
+    font-size: 45%;
+  }
+
+  @media only screen and (max-width: $bp-largest) {
+    font-size: 50%;
+  }
+}
+
+body {
+  font-family: $font-reg;
+  color: $color-grey-dark-2;
+  font-weight: 300;
+  line-height: 1.6;
+  background-color: $color-grey-light-1;
+  position: relative;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: $template-columns;
+}
