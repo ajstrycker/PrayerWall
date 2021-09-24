@@ -98,7 +98,7 @@ export const addPrayer = (id) => async (dispatch, getState) => {
       ? JSON.parse(localStorage.getItem('prayedForIds'))
       : []
 
-    if (idList.indexOf(id) == -1) {
+    if (idList.indexOf(id) === -1) {
       idList.push(id)
 
       localStorage.setItem('prayedForIds', JSON.stringify(idList))

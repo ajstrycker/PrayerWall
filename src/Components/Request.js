@@ -19,9 +19,6 @@ const Request = ({ req, i }) => {
   const WallPrayedForIds = useSelector((state) => state.WallPrayedForIds)
   const { prayedForIds } = WallPrayedForIds
 
-  const WallAddPrayer = useSelector((state) => state.WallAddPrayer)
-  var { loading: loadingAddPrayer, success: successAddPrayer } = WallAddPrayer
-
   useEffect(() => {
     setPrayedFor(req.prayedfor)
     setReplies(req.replies)
@@ -31,7 +28,7 @@ const Request = ({ req, i }) => {
   const AddPrayer = (id) => () => {
     return new Promise((resolve) => {
       // make sure they didnt alrady pray for this one
-      if (prayedForIds.indexOf(id) == -1) {
+      if (prayedForIds.indexOf(id) === -1) {
         dispatch(addPrayer(id))
 
         setPrayedFor(prayedFor + 1)
@@ -51,12 +48,15 @@ const Request = ({ req, i }) => {
         <div
           className='prayerwall__wall__reqs__req box'
           key={req.ID}
-          id={req.ID}
+          id={`req_${req.ID}`}
         >
           <div className='prayerwall__wall__reqs__req-name'>
             {req.name}
             <div className='prayerwall__wall__reqs__req-date'>
-              Requested - {moment(req.dateadded).format('MM/DD/YYYY')}
+              Requested -{' '}
+              {moment(
+                req.dateadded.replace(/-/g, '/').replace(/[T|Z]/g, ' ')
+              ).format('MM/DD/YYYY')}
             </div>
           </div>
           <div className='prayerwall__wall__reqs__req-message'>
@@ -76,7 +76,7 @@ const Request = ({ req, i }) => {
               {replyCount ? replyCount : 0}
             </span>
           </div>
-          <hr className='prayerwall__wall__reqs__req-line' />
+          <div className='prayerwall__wall__reqs__req-line'></div>
           <div className='prayerwall__wall__reqs__req-actions'>
             <div className='actions__box' onClick={AddPrayer(req.ID)}>
               <span
@@ -102,7 +102,7 @@ const Request = ({ req, i }) => {
               <span className='actions__box-icon'>
                 <FontAwesomeIcon icon={faCommentAlt} />
               </span>
-              {replies && replyCount == 0 ? 'Reply' : 'Reply / View Replies'}
+              {replies && replyCount === 0 ? 'Reply' : 'Reply / View Replies'}
             </div>
           </div>
           <Reply

@@ -44,6 +44,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    list-style: none;
 
     &-item {
       font-size: 1.7rem;
@@ -53,8 +54,109 @@
       &:hover {
         cursor: pointer;
         color: $color-grey-light-3;
+
+        .navbar__submenu {
+          display: block;
+        }
       }
     }
+  }
+
+  &__submenu {
+    display: none;
+    list-style: none;
+    text-transform: none;
+    position: absolute;
+    z-index: 1000;
+    width: 17rem;
+    background-color: $color-grey-dark-2;
+
+    li {
+      position: relative;
+      padding: 1rem;
+      border: 1px solid $color-grey-dark-3;
+      a {
+        color: #fff;
+
+        span {
+          float: right;
+        }
+      }
+
+      &:hover {
+        background-color: $color-grey-dark-1;
+
+        .navbar__submenu-items {
+          display: block;
+        }
+      }
+    }
+
+    &-items {
+      left: 16.95rem;
+      top: 0;
+      display: none;
+      list-style: none;
+      text-transform: none;
+      position: absolute;
+      z-index: 1000;
+      width: 17rem;
+      background-color: $color-grey-dark-2;
+
+      li {
+        padding: 1rem;
+        border: 1px solid $color-grey-dark-3;
+        a {
+          color: #fff;
+        }
+
+        &:hover {
+          background-color: $color-grey-dark-1;
+        }
+      }
+    }
+  }
+}
+
+.navbarSlide {
+  grid-column: full-start / full-end;
+  position: fixed;
+  width: 0;
+  height: 100%;
+  background-color: $color-grey-dark-2;
+  color: #fff;
+  z-index: 1000;
+  overflow: hidden;
+  font-size: 1.75rem;
+
+  transition: width 0.5s, opacity 0.5s;
+
+  display: flex;
+  flex-direction: column;
+
+  &__list {
+    margin: 2rem 0;
+    list-style: none;
+    transition: opacity 0.2s;
+
+    li {
+      padding: 2rem;
+      background-color: rgba($color-grey-dark-1, 0.5);
+      margin: 0.5rem 0;
+      border-radius: 0.5rem;
+      width: 100%;
+      display: inline-block;
+
+      a {
+        display: block;
+        color: inherit;
+      }
+    }
+  }
+
+  &__info {
+    list-style: none;
+    transition: opacity 0.2s;
   }
 }
 

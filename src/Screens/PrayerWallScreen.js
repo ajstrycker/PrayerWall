@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -13,7 +13,7 @@ import Loader from '../Components/Loader'
 import Toast from '../Components/Toast'
 import Request from '../Components/Request'
 import { createRequest, getRequests } from '../Actions/PrayerWallActions'
-import { TransitionGroup } from 'react-transition-group'
+import ReactPaginate from 'react-paginate'
 
 const PrayerWallScreen = () => {
   const [name, setName] = useState('')
@@ -21,8 +21,16 @@ const PrayerWallScreen = () => {
   const [share, setShare] = useState('')
   const [message, setMessage] = useState('')
   const [toasts, setToasts] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [PageCount, setPageCount] = useState(0)
+  const [CurrentPageData, setCurrentPageData] = useState([])
+  const [sort, setSort] = useState('new')
+  const [search, setSearch] = useState('')
+  const [searchData, setSearchData] = useState('')
 
-  const list = [
+  const RequestsPerPage = 10
+
+  const listForShare = [
     {
       label: 'Yes, share this on the prayer wall',
       value: 'yes',
@@ -37,6 +45,19 @@ const PrayerWallScreen = () => {
     },
   ]
 
+  const sortItems = [
+    {
+      label: 'Sort Newest to Oldest',
+      value: 'new',
+      selected: true,
+    },
+    {
+      label: 'Sort Oldest to Newest',
+      value: 'old',
+      selected: false,
+    },
+  ]
+
   const dispatch = useDispatch()
 
   const WallCreate = useSelector((state) => state.WallCreate)
@@ -48,7 +69,12 @@ const PrayerWallScreen = () => {
   } = WallCreate
 
   const WallGetRequests = useSelector((state) => state.WallGetRequests)
-  var { loading: loadingGet, requests, error: errorGet } = WallGetRequests
+  var {
+    loading: loadingGet,
+    requests,
+    success: successGetReq,
+    error: errorGet,
+  } = WallGetRequests
 
   const WallAddPrayer = useSelector((state) => state.WallAddPrayer)
   var { error: errorAddPrayer } = WallAddPrayer
@@ -58,78 +84,39 @@ const PrayerWallScreen = () => {
   const WallAddReply = useSelector((state) => state.WallAddReply)
   var { error: errorAddReply } = WallAddReply
 
-  // requests = {
-  //   Items: [
-  //     {
-  //       share: 'yes',
-  //       dateadded: '2021-06-06 12:11:37 am',
-  //       prayedfor: 0,
-  //       message: 'Praying for my mom',
-  //       ID: '04db0ac1-43a2-4d2c-97f7-264f9da602f2',
-  //       email: 'ksmith@gmail.com',
-  //       name: 'Katie Smith',
-  //       replies: [
-  //         {
-  //           text: 'This is a reply',
-  //           name: 'Andrew Strycker',
-  //           dateadded: '2021-06-06 :11:37 am',
-  //         },
-  //         {
-  //           text: 'This is a reply but a second one',
-  //           name: 'Martha',
-  //           dateadded: '2021-06-21 12:11:37 am',
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       share: 'yes',
-  //       dateadded: '2021-06-06 12:11:50 am',
-  //       prayedfor: 5,
-  //       message: 'Aj.',
-  //       ID: '96e52fa9-2d50-4a16-ae7c-9ef3896c31fe',
-  //       email: 'stryckerandrew@yahoo.com',
-  //       name: 'AJ',
-  //       replies: [],
-  //     },
-  //     {
-  //       share: 'yes',
-  //       dateadded: '2021-06-05 11:51:23 pm',
-  //       prayedfor: 0,
-  //       message: 'This goes on the wall. ',
-  //       ID: '373a7280-8624-4aae-99ee-6b561d4a33a2',
-  //       email: 'stryckerandrew@yahoo.com',
-  //       name: 'AJ Strycker',
-  //       replies: [],
-  //     },
-  //     {
-  //       share: 'yes',
-  //       dateadded: '2021-06-06 12:19:42 am',
-  //       prayedfor: 0,
-  //       message: 'Praying as my older son fights the demon of same-se',
-  //       ID: '5c3393c5-5477-42d8-b982-54ee65b20ff4',
-  //       email: 'marko@gmail.com',
-  //       name: 'Marko',
-  //       replies: [],
-  //     },
-  //     {
-  //       share: 'yes',
-  //       dateadded: '2021-06-06 12:24:11 am',
-  //       prayedfor: 0,
-  //       message:
-  //         'Please pray for my daughter Wendy who is battling breast cancer and please pray for me I need gallbladder surgery and I need it to happen right away thank you so much',
-  //       ID: 'ff5f0bef-d150-451e-999d-6e4bf9d3e553',
-  //       email: 'stryckerandrew@yahoo.com',
-  //       name: 'AJ',
-  //       replies: [],
-  //     },
-  //   ],
-  //   Count: 5,
-  //   ScannedCount: 5,
-  // }
+  // update the page data after the get requests success
+  useEffect(() => {
+    updatePageData()
+  }, [successGetReq, currentPage, sort])
 
   useEffect(() => {
-    var desc = ''
+    if (currentPage !== 0) {
+      setCurrentPage(0)
+    } else {
+      updatePageData()
+    }
+  }, [searchData, requests])
+
+  // everytime a new search
+  useEffect(() => {
+    if (search === '') {
+      setSearchData([])
+    } else {
+      setSearchData(
+        requests.Items.filter(
+          (e) =>
+            e.name.includes(search) ||
+            e.dateadded.includes(search) ||
+            e.message.includes(search)
+        )
+      )
+    }
+  }, [search])
+
+  useEffect(() => {
     if (successCreate) {
+      var desc = ''
+
       switch (share) {
         case 'no':
           desc =
@@ -138,33 +125,30 @@ const PrayerWallScreen = () => {
         case 'anonymous':
           desc =
             'You can see your request below, the name will show as anonymous.'
-          requests.Items.unshift(request.body)
+          requests.Items.unshift(request)
+          CurrentPageData.unshift(request)
           break
         default:
-          desc =
-            'Prayer request successfully submitted and you can see it below!'
-          requests.Items.unshift(request.body)
+          desc = 'Prayer request successfully submitted!'
+          requests.Items.unshift(request)
+          CurrentPageData.unshift(request)
+          break
       }
 
+      setSearch('')
+      setSort('new')
+
       // show success message
-      setToasts((toasts) => [
-        ...toasts,
-        {
-          id: toasts.length + 1,
-          title: 'Success',
-          description: desc,
-          type: 'success',
-        },
-      ])
+      AddToast('success', desc)
 
       setTimeout(() => {
-        if (document.getElementById(request.body.ID)) {
+        if (document.getElementById(`req_${request.ID}`)) {
           window.scrollTo({
             behavior: 'smooth',
-            top: document.getElementById(request.body.ID).offsetTop,
+            top: document.getElementById(`req_${request.ID}`).offsetTop,
           })
         }
-      }, 300)
+      }, 500)
 
       setName('')
       setEmail('')
@@ -173,35 +157,37 @@ const PrayerWallScreen = () => {
     }
   }, [dispatch, successCreate])
 
-  // useEffect for the add prayer functionality
+  // add a toast to the array
+  const AddToast = (type, description) => {
+    setToasts((toasts) => [
+      ...toasts,
+      {
+        id: toasts.length + 1,
+        title: type === 'error' ? 'Error' : 'Success',
+        description,
+        type,
+      },
+    ])
+  }
+
+  // show errors for the different actions
   useEffect(() => {
-    // check if there is an error
     if (errorAddPrayer && Object.keys(errorAddPrayer).length > 0) {
-      setToasts((toasts) => [
-        ...toasts,
-        {
-          id: toasts.length + 1,
-          title: 'Error',
-          description:
-            'There was an error adding a prayer to the request. If the problem persists please contact the sites administrator.',
-          type: 'error',
-        },
-      ])
+      AddToast('error', 'There was an error praying for this request.')
     }
 
     if (errorAddReply && Object.keys(errorAddReply).length > 0) {
-      setToasts((toasts) => [
-        ...toasts,
-        {
-          id: toasts.length + 1,
-          title: 'Error',
-          description:
-            'There was an error adding your reply. If the problem persists please contact the sites administrator.',
-          type: 'error',
-        },
-      ])
+      AddToast('error', 'There was an error adding your reply.')
     }
-  }, [dispatch])
+
+    if (errorGet && Object.keys(errorGet).length > 0) {
+      AddToast('error', 'There was an error getting the prayer requests.')
+    }
+
+    if (errorCreate && Object.keys(errorCreate).length > 0) {
+      AddToast('error', 'There was an error adding your request.')
+    }
+  }, [dispatch, errorGet, errorAddReply, errorAddPrayer, errorCreate])
 
   // use effect to just load the requests on page load
   useEffect(() => {
@@ -210,7 +196,7 @@ const PrayerWallScreen = () => {
   }, [])
 
   // on change for the dropdown to choose which share
-  const onChange = (item) => {
+  const onShareChange = (item) => {
     setShare(item.value)
     if (item.value === 'anonymous') {
       setName('Anonymous')
@@ -219,10 +205,15 @@ const PrayerWallScreen = () => {
     }
   }
 
+  const onSortChange = (item) => {
+    setSort(item.value)
+    setCurrentPage(0)
+  }
+
   const submitHandler = (e) => {
     e.preventDefault()
 
-    if (share != '' && name != '' && email != '' && message != '') {
+    if (share !== '' && name !== '' && email !== '' && message !== '') {
       // text areas put new lines so removing them here before calling API
       setMessage(message.replace(/(\r\n|\n|\r)/gm, ''))
 
@@ -246,6 +237,47 @@ const PrayerWallScreen = () => {
         },
       ])
     }
+  }
+
+  const updatePageData = () => {
+    if (requests && requests.Items) {
+      var listToUse = search !== '' && searchData ? searchData : requests.Items
+
+      setPageCount(Math.ceil(listToUse.length / RequestsPerPage))
+      const offset = currentPage * RequestsPerPage
+
+      if (sort === 'new') {
+        setCurrentPageData(
+          listToUse
+            .sort((a, b) =>
+              Date.parse(
+                a.dateadded.replace(/-/g, '/').replace(/[T|Z]/g, ' ')
+              ) <
+              Date.parse(b.dateadded.replace(/-/g, '/').replace(/[T|Z]/g, ' '))
+                ? 1
+                : -1
+            )
+            .slice(offset, offset + RequestsPerPage)
+        )
+      } else {
+        setCurrentPageData(
+          listToUse
+            .sort((a, b) =>
+              Date.parse(
+                a.dateadded.replace(/-/g, '/').replace(/[T|Z]/g, ' ')
+              ) >
+              Date.parse(b.dateadded.replace(/-/g, '/').replace(/[T|Z]/g, ' '))
+                ? 1
+                : -1
+            )
+            .slice(offset, offset + RequestsPerPage)
+        )
+      }
+    }
+  }
+
+  function handlePageClick({ selected: selectedPage }) {
+    setCurrentPage(selectedPage)
   }
 
   return (
@@ -291,6 +323,7 @@ const PrayerWallScreen = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 spellCheck='false'
+                className='text-input'
                 required
               ></input>
             </div>
@@ -304,6 +337,7 @@ const PrayerWallScreen = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 spellCheck='false'
+                className='text-input'
                 required
               ></input>
             </div>
@@ -315,8 +349,8 @@ const PrayerWallScreen = () => {
                 <Dropdown
                   name='choice'
                   title='Choose'
-                  list={list}
-                  onChange={onChange}
+                  list={listForShare}
+                  onChange={onShareChange}
                   styles={{
                     wrapper: { width: '100%' },
                   }}
@@ -350,20 +384,47 @@ const PrayerWallScreen = () => {
             <Loader />
           ) : (
             <>
-              {requests.Items ? (
-                <TransitionGroup component='div'>
-                  {requests.Items.sort((a, b) =>
-                    Date.parse(a.dateadded) < Date.parse(b.dateadded) ? 1 : -1
-                  ).map((req, i) => (
+              <div className='prayerwall__wall__sort'>
+                <input
+                  className='input prayerwall__wall__sort-search'
+                  placeholder='Search'
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Dropdown
+                  name='sortChoice'
+                  title='Sort'
+                  list={sortItems}
+                  onChange={onSortChange}
+                />
+              </div>
+              {CurrentPageData && CurrentPageData.length > 0 ? (
+                <>
+                  {CurrentPageData.map((req, i) => (
                     <Request req={req} i={i} />
                   ))}
-                </TransitionGroup>
+                </>
               ) : (
-                'No prayer requests to display. '
+                <div className='prayerwall__wall__reqs-none'>
+                  No prayer requests to display.
+                </div>
               )}
             </>
           )}
         </div>
+        {CurrentPageData && CurrentPageData.length > 0 && (
+          <ReactPaginate
+            previousLabel={'<'}
+            nextLabel={'>'}
+            pageCount={PageCount}
+            pageRangeDisplayed={2}
+            marginPagesDisplayed={2}
+            forcePage={currentPage}
+            onPageChange={handlePageClick}
+            containerClassName={'paginate'}
+            activeClassName={'paginate__link--active'}
+            disabledClassName={'paginate__link--disabled'}
+          />
+        )}
       </div>
       <Toast
         toastList={toasts}

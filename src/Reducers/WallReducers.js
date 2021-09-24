@@ -47,6 +47,7 @@ export const wallGetRequests = (state = { requests: {} }, action) => {
       return {
         loading: false,
         requests: action.payload,
+        success: true,
       }
     case WALL_GET_FAIL:
       return {
@@ -72,6 +73,7 @@ export const wallAddPrayer = (state = { error: {} }, action) => {
     case WALL_ADD_PRAYER_FAIL:
       return {
         loading: false,
+        success: false,
         error: action.payload,
       }
     default:
